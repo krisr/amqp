@@ -348,6 +348,17 @@ class MQ
       exchange.publish(data, opts)
     end
     
+    # * :requeue => true | false (default false)
+    # If set, the server will redeliver messages that were previously consumed
+    # but not yet acknowledged.
+    #
+    def recover opts = {}
+      @mq.callback {
+        @mq.send Protocol::Basic::Recover.new({ :consumer_tag => @consumer_tag }.merge(opts))
+      }
+      self
+    end
+    
     # Boolean check to see if the current queue has already been subscribed
     # to an exchange. 
     #
